@@ -16,7 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Map;
 
 /**
  * @Author Kelly Speelman - de Jonge
@@ -57,14 +58,17 @@ public class WalletController {
 
     @GetMapping("/walletHistory")
     @ResponseBody
-    public ResponseEntity<String> gotoWalletHistoryScreen(@RequestHeader String authorization){
+    public ResponseEntity<String> gotoWalletHistoryScreen(@RequestHeader String authorization){ //, @RequestBody String date
         if (!authorization.split(" ")[0].equals("Bearer")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Got to login");
         }
         if (authenticateService.authenticate(authorization)){
+            //LocalDateTime dateTime = LocalDateTime.parse(date);
             try {
-                List<GraphicsWalletDTO> historyClient = walletService.getWalletHistoryClient(authorization);
-                String jsonWalletHistory = MAPPER.writeValueAsString(historyClient);
+                walletService.getWallet(authorization);
+                Map<String, Double> pieChart = walletService.calculateInformationPie();
+                //walletService.calculateInformationLine(dateTime);
+                String jsonWalletHistory = MAPPER.writeValueAsString(pieChart);
                 return ResponseEntity.ok().body(jsonWalletHistory);
             } catch (JsonProcessingException exception) {
                 logger.error(exception.getMessage());

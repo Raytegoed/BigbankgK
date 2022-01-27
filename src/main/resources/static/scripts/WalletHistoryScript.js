@@ -8,35 +8,50 @@ google.charts.setOnLoadCallback(drawCharts);
 let token = localStorage.getItem(JWT_KEY);
 
 function drawCharts(){
-    /*let token = "hoi@hotmail.nl"; // test token voor het testen van de back met de frond end.
-    getWalletHistorie(token);*/
-    let valutaData = '{"piechart": ['+
-        '{"Valuta":"Euro","Price":20},'+
-        '{"Valuta":"Cardano","Price":200},'+
-        '{"Valuta":"Cardano","Price":70},'+
-        '{"Valuta":"Litecoin","Price":30}' +
-        '],"linechart": ['+
+    //let token = "hoi@hotmail.nl"; // test token voor het testen van de back met de frond end.
+    //let valutaData = getWalletHistorie(token);
+    let valutaData =
+        '{"Euro":20,'+
+        '"Cardano":200,'+
+        '"Litecoin":30}';
+    let data2 =
+        '{"linechart": ['+
     '{"dateTime":"2022-01-01T14:53:41","Euro":20, "All crypto":200},'+
     '{"dateTime":"2022-01-01T14:53:41","Euro":20, "All crypto":210},'+
     '{"dateTime":"2022-01-01T14:53:41","Euro":100, "All crypto":100}' +
         '],"barchart": ['+
     '{"Valuta":"Euro","old":20,"nieuw":20},'+
     '{"Valuta":"Cardano","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano3","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano4","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano5","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano6","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano7","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano8","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano9","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano10","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano11","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano12","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano13","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano14","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano15","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano16","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano17","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano18","old":200,"nieuw":210},'+
+    '{"Valuta":"Cardano19","old":200,"nieuw":210},'+
     '{"Valuta":"Litecoin","old":20,"nieuw":30}]}';
     let obj = JSON.parse(valutaData);
-    //document.getElementById("test").innerHTML = obj["piechart"];
+    let obj2 = JSON.parse(data2);
 
-    const dataPie = google.visualization.arrayToDataTable(getInfromationPieChart(obj["piechart"]));
-    const dataLine = google.visualization.arrayToDataTable(getInfromationLineChart(obj["linechart"]));
-    const dataBar = google.visualization.arrayToDataTable(getInfromationBarChart(obj["barchart"]));
+    const dataPie = google.visualization.arrayToDataTable(getInfromationPieChart(obj));
+    const dataLine = google.visualization.arrayToDataTable(getInfromationLineChart(obj2["linechart"]));
+    const dataBar = google.visualization.arrayToDataTable(getInfromationBarChart(obj2["barchart"]));
 
     const options = {
-        //title: 'My Wallet',
         is3D: true,
         pieSliceTextStyle: {
             color: 'black',
         },
-        //colors: ['#b0120a', '#ffab91'],
         sliceVisibilityThreshold: 0.08,
         backgroundColor: 'none',
     };
@@ -72,7 +87,8 @@ const getWalletHistorie = async (token) => {
 function getInfromationPieChart(obj) {
     let dataArray = [['Valuta', 'Price']];
     for (const x in obj) {
-        dataArray.push([obj[x]["Valuta"], obj[x]["Price"]]);
+        document.getElementById("test").innerHTML = x;
+        dataArray.push([x, obj[x]]);
     }
     return dataArray;
 }

@@ -1,12 +1,15 @@
 .piechart{
+    margin: auto;
     width: 600px;
     height: 300px;
 }
 .linechart{
-    width: 900px;
+    margin: auto;
+    width: 800px;
     height: 300px;
 }
 .barchart{
-    width: 900px;
-    height: 300px;
+    margin: auto;
+    width: 800px;
+    height: 800px;
 }
