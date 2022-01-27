@@ -22,7 +22,7 @@ header {
     width: 69%;
     align-items: center;
     justify-items: center;
-    justify-content: center;
+    justify-content: space-around;
     align-content: center;
     margin:auto;
 
@@ -32,6 +32,9 @@ header {
     padding: 0 0  10px 0;
     background-color: var(--blue);
     border-radius: 28px 28px 0 0 ;
+}
+header label{
+    font-size: 4vh;
 }
 
 #navigation {
