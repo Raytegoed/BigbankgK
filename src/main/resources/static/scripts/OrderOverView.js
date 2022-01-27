@@ -14,14 +14,70 @@ const FEE_LABEL_CLASS = "Fee";
 const KEY_CLASS = "key"
 const VALUE_CLASS = "value"
 const ASSETCODELABEL_CLASS = "code"
-
+let UNSELECTED_BUTTON_CLASS = "unselected";
+let SELECTED_BUTTON_CLASS = "selected";
 const DELETE_BUTTON_TEXT = "Delete";
 let ORDER_DELETE_BUTTON_CLASS = "orderDeleteButton";
 const ORDER_TO_DELETE_LABEL_ID = "orderToDelete";
 const ORDERVIEW_CONTAINER = document.getElementById(ORDERVIEW_CONTAINER_ID)
-let currentContent = "ALL"
+
 let orderDTOs;
 let transactionDTOs;
+
+class SelectedContent {
+    static MY_ORDERS = "MY_ORDERS"
+    static MY_TRANSACTIONS = "MY_TRANSACTIONS"
+    static MARKET_ORDERS = "MARKET_ORDERS"
+}
+
+let currentContent = SelectedContent.MY_ORDERS;
+
+function MyOrders(orderType) {
+    return orderDTOs.filter(o => o.orderType === orderType && o.walletOwner === WalletOwner.CURRENTCLIENT)
+}
+
+function MyTransactions(orderType) {
+    return transactionDTOs.filter(t => t.orderType === orderType)
+}
+
+function MarketOrders(orderType) {
+    return orderDTOs.filter(o => o.orderType === orderType)
+}
+
+let contentSelector = {}
+contentSelector.MY_TRANSACTIONS = MyTransactions
+contentSelector.MY_ORDERS = MyOrders
+contentSelector.MARKET_ORDERS = MarketOrders
+
+
+const filterOrders = document.getElementById("filterOrders");
+const filterLabel = document.createElement("label")
+filterOrders.appendChild(filterLabel);
+filterLabel.innerText = "Filter";
+
+function resetButtonsClass() {
+    for (const button of filterOrders.childNodes) {
+        button.className = UNSELECTED_BUTTON_CLASS;
+    }
+}
+
+for (const selectedContent in SelectedContent) {
+    const optie = document.createElement("button")
+    optie.innerText = selectedContent
+    if (selectedContent === currentContent) {
+        optie.className = SELECTED_BUTTON_CLASS
+    } else {
+        optie.className = UNSELECTED_BUTTON_CLASS
+    }
+    optie.addEventListener("click", () => {
+        currentContent = selectedContent;
+        resetButtonsClass();
+        optie.className = SELECTED_BUTTON_CLASS;
+        fillPage();
+    })
+    filterOrders.appendChild(optie);
+}
+
 
 function createKeyValueContainer(labelClass, innerHtml) {
     const container = document.createElement("div");
@@ -69,7 +125,6 @@ function deleteOrderPopUp(orderID) {
 function createDeleteButton(order) {
     const deleteButton = document.createElement("button")
     deleteButton.className = ORDER_DELETE_BUTTON_CLASS;
-
     deleteButton.innerText = DELETE_BUTTON_TEXT;
     deleteButton.addEventListener("click", () => {
         console.log("deleteButtonClicked")
@@ -89,7 +144,6 @@ function createOrderContainer(order) {
             orderContainer.classList.add(WalletOwner.CURRENTCLIENT);
         }
         orderContainer.appendChild(createKeyValueContainer(FEE_LABEL_CLASS, normalizePrice(order.fee)))
-
         orderContainer.appendChild(createKeyValueContainer(PRICE_EX_FEE_LABEL_CLASS, normalizePrice(order.priceExcludingFee)))
     } else {
         if (order.walletOwner === WalletOwner.CURRENTCLIENT) {
@@ -106,16 +160,11 @@ function createOrderContainer(order) {
     return orderContainer
 }
 
-const filterOrders = document.getElementById("filterOrders");
 
 function emptyOrderViewContainer() {
     ORDERVIEW_CONTAINER.innerHTML = "";
 }
 
-filterOrders.addEventListener("change", () => {
-    currentContent = filterOrders.options[filterOrders.selectedIndex].value;
-    fillPage();
-})
 
 function createOrderColumn(filteredOrderDTOs) {
     const orderColumn = document.createElement("div")
@@ -136,22 +185,10 @@ function createOrderColumn(filteredOrderDTOs) {
 function fillPage() {
     emptyOrderViewContainer();
     for (const orderType in OrderType) {
-        let filteredOrderDTOs;
-        let showTranActions = false;
-        console.log(currentContent)
-        if (currentContent === "ALL") {
-            filteredOrderDTOs = orderDTOs.filter(o => o.orderType === orderType)
-        } else {
-            filteredOrderDTOs = orderDTOs.filter(o => {
-                return o.orderType === orderType.toString() && o.walletOwner === WalletOwner.CURRENTCLIENT
-            })
-            showTranActions = true;
-        }
+        const selectionFunction = contentSelector[currentContent]
+        const filteredOrderDTOs = selectionFunction(orderType);
         if (filteredOrderDTOs.length !== 0) {
             ORDERVIEW_CONTAINER.appendChild(createOrderColumn(filteredOrderDTOs));
-        }
-        if (showTranActions && orderType === OrderType.TRANSACTION) {
-            ORDERVIEW_CONTAINER.appendChild(createOrderColumn(transactionDTOs));
         }
     }
 }
@@ -220,11 +257,11 @@ function convertFetchToTrasactionDTOs(transactions) {
 
 function doTimedRefresh() {
     initializePage();
-    setInterval( initializePage, updateInterval);
+    setInterval(initializePage, updateInterval);
 }
 
 function setTimedPageRefresh() {
-    setTimeout( doTimedRefresh, initialTimeOut);
+    setTimeout(doTimedRefresh, initialTimeOut);
 }
 
 customizeMessageService();
