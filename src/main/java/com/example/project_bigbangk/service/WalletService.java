@@ -52,9 +52,9 @@ public class WalletService {
         Map<String, Double> assetsValues = new HashMap<>();
         assetsValues.put("Euro", balance);
 
-        for (Asset entry:assets.keySet()){
-            double assetValue = entry.getCurrentPrice()*assets.get(entry);
-            assetsValues.put(entry.getName(), assetValue);
+        for (Map.Entry<Asset, Double> entry:assets.entrySet()){
+            double assetValue = rootRepository.getCurrentPriceByAssetCode(entry.getKey().getCode())*entry.getValue();
+            assetsValues.put(entry.getKey().getName(), assetValue);
         }
         System.out.println(assetsValues);
         return assetsValues;

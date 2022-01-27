@@ -8,15 +8,9 @@ google.charts.setOnLoadCallback(drawCharts);
 let token = localStorage.getItem(JWT_KEY);
 
 async function drawCharts() {
-    //let token = "hoi@hotmail.nl"; // test token voor het testen van de back met de frond end.
-    let valutaData =
-        await getWalletHistorie(token);
-    valutaData = valutaData.toString();
-    console.log(valutaData);
-    /*let valutaData =
-        '{"Bitcoin":0.0,"Uniswap":0.0,"Polkadot":0.0,"Litecoin":0.0,"Euro":10000.0,"Dai":0.0,"Cardano":0.0,"Avalanche":0.0,"Tether":0.0,"Terra":0.0}';
-*/
-    let data2 =
+    let valutaData = await getWalletHistorie(token);
+
+    /*let data2 =
         '{"linechart": [' +
         '{"dateTime":"2022-01-01T14:53:41","Euro":20, "All crypto":200},' +
         '{"dateTime":"2022-01-01T14:53:41","Euro":20, "All crypto":210},' +
@@ -42,16 +36,11 @@ async function drawCharts() {
         '{"Valuta":"Cardano18","old":200,"nieuw":210},' +
         '{"Valuta":"Cardano19","old":200,"nieuw":210},' +
         '{"Valuta":"Litecoin","old":20,"nieuw":30}]}';
+    let obj2 = JSON.parse(data2);*/
 
-    document.getElementById("test").innerHTML = valutaData;
-    console.log(valutaData);
-    console.log(valutaData[0]);
-    let obj = JSON.parse(valutaData);
-    let obj2 = JSON.parse(data2);
-
-    const dataPie = google.visualization.arrayToDataTable(getInfromationPieChart(obj));
+    const dataPie = google.visualization.arrayToDataTable(getInfromationPieChart(valutaData));/*
     const dataLine = google.visualization.arrayToDataTable(getInfromationLineChart(obj2["linechart"]));
-    const dataBar = google.visualization.arrayToDataTable(getInfromationBarChart(obj2["barchart"]));
+    const dataBar = google.visualization.arrayToDataTable(getInfromationBarChart(obj2["barchart"]));*/
 
     const options = {
         is3D: true,
@@ -62,13 +51,13 @@ async function drawCharts() {
         backgroundColor: 'none',
     };
 
-    const piechart = new google.visualization.PieChart(document.getElementById('piechart'));
+    const piechart = new google.visualization.PieChart(document.getElementById('piechart'));/*
     const linechart = new google.visualization.LineChart(document.getElementById('linechart'));
-    const barchart = new google.visualization.BarChart(document.getElementById('barchart'));
+    const barchart = new google.visualization.BarChart(document.getElementById('barchart'));*/
 
     piechart.draw(dataPie, options);
-    linechart.draw(dataLine, options);
-    barchart.draw(dataBar, options);
+/*    linechart.draw(dataLine, options);
+    barchart.draw(dataBar, options);*/
 }
 
 const getWalletHistorie = async (token) => {
@@ -78,6 +67,7 @@ const getWalletHistorie = async (token) => {
             headers: acceptHeadersWithToken(token),
         }).then(promise => {
         if (promise.ok) {
+            console.log("update");
             return promise.json();
         } else if(promise.status===400){
             console.log("Couldn't retrieve pricehistory from the server")
@@ -86,23 +76,21 @@ const getWalletHistorie = async (token) => {
             window.location.href = loginPageURL
         }
     }).then(json => json)
-        .catch(error=>console.log("Somethin went wrong: " + error))
+        .catch(error=>console.log("Something went wrong: " + error))
 }
 
 function getInfromationPieChart(obj) {
     let dataArray = [['Valuta', 'Price']];
-    for (const x in obj) {
-console.log(x + " " + obj[x])
-            dataArray.push([x, obj[x]]);
-
+    for (const key in obj) {
+        dataArray.push([key, obj[key]]);
     }
     return dataArray;
 }
+/*
 
 function getInfromationLineChart(obj) {
     let dataArray = [['Date', 'Euro', 'All Crypto', 'Total']];
     for (const x in obj) {
-        //document.getElementById("test").innerHTML = x;
         let totaal = parseInt(obj[x]["Euro"]) + parseInt(obj[x]["All crypto"]);
         dataArray.push([obj[x]["dateTime"], obj[x]["Euro"], obj[x]["All crypto"], totaal]);
     }
@@ -116,3 +104,4 @@ function getInfromationBarChart(myobj) {
     }
     return dataArray;
 }
+*/
