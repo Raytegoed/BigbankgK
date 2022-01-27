@@ -50,39 +50,50 @@ class WalletServiceTest {
 
         Mockito.when(mockAssetCardano.getName()).thenReturn("Cardano");
         Mockito.when(mockAssetCardano.getCode()).thenReturn("ADA");
+        Mockito.when(mockAssetCardano.getCurrentPrice()).thenReturn(2.0);
         Mockito.when(mockAssetDai.getName()).thenReturn("Dai");
         Mockito.when(mockAssetDai.getCode()).thenReturn("DAI");
+        Mockito.when(mockAssetDai.getCurrentPrice()).thenReturn(2.0);
         Mockito.when(mockAssetLitecoin.getName()).thenReturn("Litecoin");
         Mockito.when(mockAssetLitecoin.getCode()).thenReturn("LTC");
+        Mockito.when(mockAssetLitecoin.getCurrentPrice()).thenReturn(2.0);
         Map<Asset, Double> assetMap = new HashMap<>();
-        assetMap.put(mockAssetCardano, 4.0);
-        assetMap.put(mockAssetDai, 0.0);
-        assetMap.put(mockAssetLitecoin, 0.0);
+        assetMap.put(mockAssetCardano, 0.0);
+        assetMap.put(mockAssetDai, 1.0);
+        assetMap.put(mockAssetLitecoin, 8.0);
 
         Mockito.when(mockWallet.getAssets()).thenReturn(assetMap);
-        Asset asset = new Asset("DAI", "Dai");
+        //Asset asset = new Asset("DAI", "Dai");
 
-        Mockito.when(transaction1.getAsset()).thenReturn(asset);
-        Mockito.when(transaction1.getPriceExcludingFee()).thenReturn(240.0);
-        Mockito.when(transaction1.getAssetAmount()).thenReturn(2.0);
+        Mockito.when(transaction1.getAsset()).thenReturn(mockAssetDai);
+        Mockito.when(transaction1.getPriceExcludingFee()).thenReturn(480.0);
+        Mockito.when(transaction1.getAssetAmount()).thenReturn(4.0);
         Mockito.when(transaction1.getFee()).thenReturn(2.0);
         Mockito.when(transaction1.getDate()).thenReturn(LocalDateTime.now().minusDays(3));
         Mockito.when(transaction1.getBuyerWallet()).thenReturn(mockWallet);
 
-        Mockito.when(transaction2.getAsset()).thenReturn(asset);
+        Mockito.when(transaction2.getAsset()).thenReturn(mockAssetDai);
         Mockito.when(transaction2.getPriceExcludingFee()).thenReturn(600.0);
         Mockito.when(transaction2.getAssetAmount()).thenReturn(2.0);
         Mockito.when(transaction2.getFee()).thenReturn(4.0);
-        Mockito.when(transaction2.getDate()).thenReturn(LocalDateTime.now().minusDays(3).minusHours(7));
+        Mockito.when(transaction2.getDate()).thenReturn(LocalDateTime.now().minusDays(5).minusHours(7));
         Mockito.when(transaction2.getBuyerWallet()).thenReturn(mockWallet);
 
-        Mockito.when(transaction3.getAsset()).thenReturn(asset);
-        Mockito.when(transaction3.getPriceExcludingFee()).thenReturn(670.0);
+        Mockito.when(transaction3.getAsset()).thenReturn(mockAssetDai);
+        Mockito.when(transaction3.getPriceExcludingFee()).thenReturn(600.0);
         Mockito.when(transaction3.getAssetAmount()).thenReturn(3.0);
         Mockito.when(transaction3.getFee()).thenReturn(4.5);
-        Mockito.when(transaction3.getDate()).thenReturn(LocalDateTime.now().minusDays(3).minusHours(7));
+        Mockito.when(transaction3.getDate()).thenReturn(LocalDateTime.now().minusDays(8).minusHours(7));
         Mockito.when(transaction3.getBuyerWallet()).thenReturn(mockWallet2);
         Mockito.when(transaction3.getSellerWallet()).thenReturn(mockWallet);
+
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add(transaction1);
+        transactions.add(transaction3);
+        transactions.add(transaction2);
+
+
+        Mockito.when(mockWallet.getTransaction()).thenReturn(transactions);
 
         Mockito.when(mockClient.getWallet()).thenReturn(mockWallet);
 
@@ -96,40 +107,21 @@ class WalletServiceTest {
     }
 
     @Test
-    void getWalletHistoryClient() {
-        List<Transaction> transactions = new ArrayList<>();
-        transactions.add(transaction1);
-        transactions.add(transaction2);
-        transactions.add(transaction3);
-        Mockito.when(mockWallet.getTransaction()).thenReturn(transactions);
-        Mockito.when(walletService.getWalletClient("token")).thenReturn(mockWallet);
-        List<GraphicsWalletDTO> history = walletService.calculateHisory();
-        System.out.println(history.get(0).nieuw);
-        System.out.println(history.get(1).nieuw);
-        System.out.println(history.get(2).nieuw);
-        System.out.println(history.get(3).nieuw);
-        assertThat(history.get(1).nieuw).as("eerste vergelijking").isNotEqualTo(history.get(2).nieuw).isNotEqualTo(history.get(3).nieuw);
-        assertThat(history.get(2).nieuw).as("tweede vergelijking").isNotEqualTo(history.get(3).nieuw);
-        assertThat(history.get(1).nieuw.getBalance()).as("test de eerste history balance").isEqualTo(9758.0);
-        assertThat(history.get(2).nieuw.getBalance()).as("test de tweede history balance").isEqualTo(9154.0);
-        assertThat(history.get(3).nieuw.getBalance()).as("test de derde history balance").isEqualTo(9819.5);
-        assertThat(history.get(1).dateTime).isEqualTo(transaction1.getDate().toString());
-        assertThat(history.get(2).dateTime).isEqualTo(transaction2.getDate().toString());
-        assertThat(history.get(3).dateTime).isEqualTo(transaction3.getDate().toString());
-        // todo nog werkend maken
-        /*
-        assertThat(history.get(1).nieuw.getAssets().get(transaction1.getAsset())).as("test de eerste assets").isEqualTo(2.0);
-        assertThat(history.get(2).nieuw.getAssets().get(transaction2.getAsset())).as("test de tweede assets").isEqualTo(4.0);
-        assertThat(history.get(3).nieuw.getAssets().get(transaction3.getAsset())).as("test de tweede assets").isEqualTo(1.0);*/
-
+    void calculateInformationPie(){
+        walletService.getWalletClient("token");
+        walletService.calculateInformationPie();
     }
 
     @Test
-    void calculateWalletBalanceHistory() {
-
+    void calculateInformationLine(){
+        /*walletService.getWalletClient("token");
+        walletService.calculateInformationLine(LocalDateTime.now().minusDays(9));*/
     }
 
     @Test
-    void calculateCurrentValue() {
+    void calculateInformationBar(){
+       /* walletService.getWalletClient("token");
+        walletService.calculateInformationBar();*/
     }
+
 }
