@@ -10,7 +10,7 @@ class walletDTO {
         this.freeBalance = freeBalance;
     }
 }
-
+let assetPrice = 0.0;
 let token = localStorage.getItem(JWT_KEY);
 
 
@@ -34,14 +34,17 @@ function getWallet(){
                 if(assetEntry[1] > 0) {
                     let assetDiv = document.createElement('div');
                     assetDiv.className = 'asset';
-                    assetDiv.innerHTML = assetEntry[0] + " : " + assetEntry[1];
+                    getPrice(assetEntry[0].substr(0,assetEntry[0].indexOf(' ')));
+                    setTimeout(() => {
+                        assetDiv.innerHTML = assetEntry[0] + " : " + assetEntry[1] + "<br> Value: " + (assetPrice * assetEntry[1]) + " €";
+                    }, 100);
                     let orderButton = document.createElement('button');
                     orderButton.addEventListener("click", function(){
                         orderSelectedAsset(assetEntry[0]);});
                     orderButton.className = "smallButton";
                     orderButton.innerHTML = "Trade";
-                    assetDiv.appendChild(orderButton);
                     document.getElementById('assetContainer').appendChild(assetDiv);
+                    document.getElementById('assetContainer').appendChild(orderButton);
                 }
             }
         })
@@ -61,5 +64,22 @@ function orderSelectedAsset(assetText){
     localStorage.setItem(CURRENT_ASSET_KEY, JSON.stringify(assetObject));
 
     window.location.href = "PlaceOrder.html";
+}
+
+/**fetches the latest price of the asset*/
+function getPrice(code) {
+    fetch(`${rootURL}getcurrentprice`, {
+        method: "POST",
+        headers: acceptHeadersWithToken(token),
+        body: code
+    })
+        .then(async response => {
+            if (response.ok) {
+               response.json().then((price) => { assetPrice = price});
+            }else {
+                console.log("token expired");
+                return 0;
+            }
+        });
 }
 
