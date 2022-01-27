@@ -15,7 +15,7 @@ class BuySellorderDTO {
 let asset = JSON.parse(localStorage.getItem(CURRENT_ASSET_KEY));
 let token = localStorage.getItem(JWT_KEY);
 
-document.getElementById("coinName").innerHTML = "Trade " + asset.name;
+document.getElementById("coinName").innerHTML = "Trade " + asset.name + " (" + asset.code + ")";
 
 getPrice();
 

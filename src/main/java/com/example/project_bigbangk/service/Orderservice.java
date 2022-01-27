@@ -121,7 +121,7 @@ public class Orderservice {
 
         if (bankWallet.sufficientBalance(totalPayout)) {
             if (clientWallet.sufficientAsset(asset, order.getAssetAmount())) {
-                executeSellOrder(order, sellOrderValue, orderFee, totalPayout, bankWallet, clientWallet);
+                executeSellOrder(order, sellOrderValue, orderFee, totalPayout, clientWallet, bankWallet);
                 response = ResponseEntity.status(201).body(Messages.SuccessSell.getBody());
             } else {
                 response = ResponseEntity.status(400).body(Messages.FundBank.getBody());
@@ -136,7 +136,7 @@ public class Orderservice {
         clientWallet.removeFromAsset(asset, order.getAssetAmount());
 
         bankWallet.removeFromBalance(totalPayout);
-        bankWallet.removeFromAsset(asset, order.getAssetAmount());
+        bankWallet.addToAsset(asset, order.getAssetAmount());
 
         Transaction transaction = new Transaction(asset, sellOrderValue, order.getAssetAmount(), LocalDateTime.now(), orderFee, bankWallet, clientWallet);
         rootRepository.saveTransaction(transaction);
