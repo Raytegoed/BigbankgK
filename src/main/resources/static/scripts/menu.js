@@ -22,8 +22,6 @@ const stringToHTML = function (str) {
 function declareSubPages() {
     navElements.marketplace = stringToHTML('<object data="MarketPlace.html"  id="currentContentObject"></object>')
     navElements.wallet = stringToHTML('<object data="wallet.html"  id="currentContentObject"></object>')
-    navElements.history = stringToHTML('<object data="TransactionHistory.html"  id="currentContentObject"></object>')
-    navElements.order = stringToHTML('<object  data="PlaceOrder.html"  id="currentContentObject"></object>')
     navElements.orderoverview = stringToHTML('<object  data="orderoverview.html"  id="currentContentObject"></object>')
     navElements.wallet = stringToHTML('<object data="wallet.html"  id="currentContentObject"></object>')
 }
