@@ -53,6 +53,17 @@ function fillNavigationElement() {
         })
         navigation.appendChild(navLink)
     }
+    addLogout();
+}
+
+function addLogout() {
+    const navLinkLogout = document.createElement("label")
+    navLinkLogout.innerText = "logout";
+    navLinkLogout.addEventListener( "click",
+        function(){
+            localStorage.setItem(JWT_KEY, "");
+            window.location.href = "index.html"});
+    navigation.appendChild(navLinkLogout);
 }
 
 
