@@ -36,6 +36,7 @@ public class PriceHistoryCache {
      * @return a list of PriceHistory
      */
     public List<PriceHistory> getPriceHistoriesFromDate(LocalDateTime localDateTime) {
+        logger.info("fetch on PriceHistoryCache");
         List<PriceHistory> returnPriceHistories= new ArrayList<>();
         for(PriceHistory priceHistory: priceHistories){
             List<PriceDate> priceDates = priceHistory.getPriceDates().stream().filter(d->d.getDateTime().isAfter(localDateTime)).collect(Collectors.toList());

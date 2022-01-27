@@ -15,4 +15,6 @@ public interface IPricedateDAO {
     List<PriceDate> getPriceDatesByCodeFromDate(LocalDateTime date, String assetCode);
 
     Double getPriceDateByCodeOnDate(LocalDateTime date, String assetCode);
+
+    PriceDate getMostRecentUpdate();
 }

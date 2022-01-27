@@ -1,8 +1,9 @@
+"use strict"
 /**
  * converting the PriceHistories from /marketplace into html
  * @author Pieter Jan Bleichrodt
  */
-"use strict"
+
 //Declare constants
 
 const MARKETPLACE_ROOT_CONTAINER = document.getElementById("assetContainers")
@@ -26,8 +27,6 @@ const ROUNDING_DIGITS = 2
 
 const GRAPHWIDTH = 200;
 const GRAPHHEIGHT = 100;
-let updateInterval = 300000;
-let lastUpdate = Date.now();
 let token = localStorage.getItem(JWT_KEY)
 let daysBackInputField = document.getElementById(DAYSBACKINPUTFIELD_ID);
 let daysBack = 7
@@ -36,39 +35,40 @@ let priceHistories = []
 
 //Declare functions
 async function initializePage() {
-    daysBackInputField.value = daysBack;
+    daysBackInputField.value = 30;
     console.log("pageInitialized on " + new Date(Date.now()).toLocaleTimeString())
     await refreshPriceHistories()
-     fillPageWithCreateAssets()
+    daysBackInputField.value=daysBack;
+    fillPageWithCreateAssets()
 }
 
-async function refreshPriceHistories(){
+async function refreshPriceHistories() {
     const json = await getPriceHistoriesByAsset(token)
-    updateInterval = Number.parseFloat(json.updateInterval);
     const jsonPriceHistories = JSON.parse(json.priceHistory);
     if (jsonPriceHistories !== undefined) {
         saveAsPriceHistories(jsonPriceHistories)
-        lastUpdate = priceHistories[0].priceDates.sort(c => c.dateTime).reverse()[0].dateTime
     }
 }
+
 async function refreshPage() {
-  await refreshPriceHistories()
-    for(const priceHistory of priceHistories){
+    await refreshPriceHistories()
+    for (const priceHistory of priceHistories) {
         const assetContainer = document.getElementById(priceHistory.asset.code)
         assetContainer.getElementsByClassName(ASSETCURRENTPRICELABEL_CLASS)[0].innerHTML = normalizePrice(priceHistory.asset.currentPrice)
         assetContainer.getElementsByClassName(GRAPHCONTAINER_CLASS)
-        upDatePriceHistoryGraph(priceHistory, GRAPHWIDTH,GRAPHHEIGHT)
+        upDatePriceHistoryGraph(priceHistory, GRAPHWIDTH, GRAPHHEIGHT)
     }
 }
-function setTimedPageRefresh(){
-    const dateNow = new Date()
-    const initialTimeOut = updateInterval - (dateNow.getTime() - lastUpdate.getTime()) + 10000
-    console.log(initialTimeOut)
-    const onPriceHistoryUpdate = () => {
-        refreshPage()
-        setInterval(refreshPage, updateInterval)
-    }
-    setTimeout(onPriceHistoryUpdate, initialTimeOut)
+
+function setTimedPageRefresh() {
+    console.log("setTimedOutPageRefresh invoked");
+    setTimeout(timedPriceHistoryUpdate, initialTimeOut);
+}
+
+const timedPriceHistoryUpdate = () => {
+    console.log("setTimedPageRefresh invoked");
+    refreshPage();
+    setInterval(refreshPage, updateInterval);
 }
 
 function upDatePriceHistoryGraph(priceHistory, width, height) {
@@ -87,7 +87,6 @@ daysBackInputField.addEventListener("input", async () => {
     daysBack = daysBackInputField.value
     updateAllPriceHistoryGraphs();
 })
-
 
 
 function createPriceHistoryGraph(priceHistory, width, height) {
@@ -153,7 +152,7 @@ function createAssetContainer(priceHistory) {
         assetContainer.appendChild(createAssetNameLabel(priceHistory))
         assetContainer.appendChild(createAssetCurrentPriceLabel(priceHistory))
         assetContainer.appendChild(createAssetGraphContainer(priceHistory))
-       // assetContainer.appendChild(createAssetTradeButton(priceHistory))
+        // assetContainer.appendChild(createAssetTradeButton(priceHistory))
         document.getElementsByClassName(ASSETCONTAINERS_CLASS)[0].appendChild(assetContainer)
     }
 }
@@ -191,14 +190,14 @@ const getPriceHistoriesByAsset = async (token) => {
         }).then(promise => {
         if (promise.ok) {
             return promise.json()
-        } else if(promise.status===400){
+        } else if (promise.status === 400) {
             console.log("Couldn't retrieve pricehistory from the server")
             window.location.href = loginPageURL
-        }else if(promise.status===401){
-                       window.location.href = loginPageURL
+        } else if (promise.status === 401) {
+            window.location.href = loginPageURL
         }
     }).then(json => json)
-        .catch(error=>console.log("Somethin went wrong: " + error))
+        .catch(error => console.log("Somethin went wrong: " + error))
 }
 
 await initializePage()
