@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
         "spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration")
 class RegistrationTest {
     @MockBean
+    UpdateIntervalController updateIntervalController;
+    @MockBean
     OrderOverviewController orderOverviewController;
     @MockBean
     DeleteOrderController deleteOrderController;
