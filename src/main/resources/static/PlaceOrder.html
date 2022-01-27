@@ -23,10 +23,10 @@
     Current Price<br>
     <p id="currentPrice" class="smallDisplay">2</p>
     <label for="assetAmount">Coin Amount</label><br>
-    <input type="number" required="required" id="assetAmount" >
+    <input type="number" min="0" required="required" id="assetAmount" >
     <br><br>
     <label for="cashAmount">€ Amount</label><br>
-    <input type="number" required="required" id="cashAmount" >
+    <input type="number" min="0" required="required" id="cashAmount" >
     <br><br>
     <label for="orderType">Order type</label><br>
     <select id="orderType" required="required" >
@@ -38,7 +38,7 @@
     </select>
     <br><br>
     <label for="limit">Limit</label><br>
-    <input type="number" required="required" id="limit" value="0" disabled>
+    <input type="number" min="0" required="required" id="limit" value="0" disabled>
     <br><br>
 
     <div class="contentpanelRight">

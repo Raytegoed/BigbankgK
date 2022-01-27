@@ -37,7 +37,7 @@ function getWallet(){
                     getPrice(assetEntry[0].substr(0,assetEntry[0].indexOf(' ')));
                     setTimeout(() => {
                         assetDiv.innerHTML = assetEntry[0] + " : " + assetEntry[1] + "<br> Value: " + (assetPrice * assetEntry[1]) + " €";
-                    }, 100);
+                    }, 150);
                     let orderButton = document.createElement('button');
                     orderButton.addEventListener("click", function(){
                         orderSelectedAsset(assetEntry[0]);});

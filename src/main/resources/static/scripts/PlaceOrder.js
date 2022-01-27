@@ -31,6 +31,9 @@ document.getElementById('limit').addEventListener('change', assetToCash);
 /**following two functions calculate cash value of trade with amount of asset and the other way around.
 uses the assets current price or the limit set by client*/
 function assetToCash(){
+    if(document.getElementById('assetAmount').value < 0){
+        document.getElementById('assetAmount').value = 0;
+    }
     if(document.getElementById("limit").value > 0){
         document.getElementById('cashAmount').value = document.getElementById('assetAmount').value * document.getElementById("limit").value;
     }else{
@@ -39,6 +42,9 @@ function assetToCash(){
 }
 
 function cashToAsset(){
+    if(document.getElementById('cashAmount').value < 0){
+        document.getElementById('cashAmount').value = 0;
+    }
     if(document.getElementById("limit").value > 0){
         document.getElementById('assetAmount').value = document.getElementById('cashAmount').value / document.getElementById("limit").value;
     }else {
@@ -86,6 +92,7 @@ function sendOrder(tData) {
     })
         .then(async response => {
             if (response.status === 201) {
+                document.getElementById('popupButton').onclick = function(){window.location.href = "orderoverview.html"};
                 response.text().then((message) => {showWindow(message)});
             }else if(response.status === 400) {
                 response.text().then((message) => {showWindow(message)});
