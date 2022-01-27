@@ -4,6 +4,7 @@
 package com.example.project_bigbangk.controller;
 
 import com.example.project_bigbangk.BigBangkApplicatie;
+import com.example.project_bigbangk.model.Client;
 import com.example.project_bigbangk.service.MarketPlaceService;
 import com.example.project_bigbangk.service.RefreshIntervalService;
 import com.example.project_bigbangk.service.Security.AuthenticateService;
@@ -32,6 +33,7 @@ public class UpdateIntervalController {
         this.refreshIntervalService = refreshIntervalService;
         logger.info("New UpdateIntervalController");
     }
+
     @GetMapping("/updateInterval")
     @ResponseBody
     public ResponseEntity<String> getUpdateInterval(@RequestHeader String authorization) {
@@ -39,11 +41,31 @@ public class UpdateIntervalController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Got to login");
         }
         if (authenticateService.authenticate(authorization)) {
-          long initialTimeOut = refreshIntervalService.getInitialTimeOut();
+            long initialTimeOut = refreshIntervalService.getInitialTimeOut();
             try {
                 ObjectNode jsonBody = MAPPER.createObjectNode();
                 jsonBody.put("initialTimeOut", initialTimeOut)
                         .put("updateInterval", String.valueOf(BigBangkApplicatie.UPDATE_INTERVAL_PRICEUPDATESERVICE));
+                return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(jsonBody));
+            } catch (JsonProcessingException e) {
+                logger.error(e.getMessage());
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("token expired");
+    }
+
+    @GetMapping("/clientName")
+    @ResponseBody
+    public ResponseEntity<String> getNameClient(@RequestHeader String authorization) {
+        if (!authorization.split(" ")[0].equals("Bearer")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Got to login");
+        }
+        if (authenticateService.authenticate(authorization)) {
+            try {
+                Client client = authenticateService.getClientFromToken(authorization);
+                String name = String.format("%s %s %s", client.getFirstName(), client.getInsertion(), client.getLastName());
+                ObjectNode jsonBody = MAPPER.createObjectNode();
+                jsonBody.put("clientName", name);
                 return ResponseEntity.status(HttpStatus.OK).body(MAPPER.writeValueAsString(jsonBody));
             } catch (JsonProcessingException e) {
                 logger.error(e.getMessage());

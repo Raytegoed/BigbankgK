@@ -14,16 +14,33 @@
     font-size: 100%;
     color: white;
 }
-#filterOrders{
-    position: relative;
-    margin: 1%;
-    background-color: var(--orange);
-    border-block-style: none;
-    border-radius: 10px;
-    width: 100px;
-    height: 20px;
-}
 
+#filterOrders {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 10px;
+}
+#filterOrders label{
+    color: white;
+    font-family: sans-serif;
+    align-self: center;
+}
+#filterOrders button {
+    min-width: 32px;
+    font-size:12px;
+    padding:5px 5px;
+    margin: 4px;
+}
+.selected{
+    background-color: rgb(107, 70, 46);
+border-color: white;
+    min-width: 32px;
+    font-size:12px;
+    padding:5px 5px;
+    margin: 4px;
+}
 .orderColumn {
     max-width: 100%;
     min-width: 33%;
@@ -53,8 +70,8 @@
     font-size: 100%;
 }
 
- .CURRENTCLIENT {
-     border-style: solid;
+.CURRENTCLIENT {
+    border-style: solid;
     border-color: var(--orange);
     border-width: 2px;
 }

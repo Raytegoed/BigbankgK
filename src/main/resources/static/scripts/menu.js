@@ -6,13 +6,31 @@
 const navigation = document.getElementById("navigation")
 const currentContentContainer = document.getElementById("currentContentContainer");
 const navElements = {}
-
+const CLIENTIDENTIFIER = document.getElementById("welcomeMessage")
+const token = localStorage.getItem(JWT_KEY);
 const stringToHTML = function (str) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(str, 'text/html');
     return doc.body;
 }
+const getClientName = async (token) => {
+    return await fetch(`${rootURL}clientName`,
+        {
+            method: 'GET',
+            headers: acceptHeadersWithToken(token)
+        }).then(async promise => {
+        if (promise.ok) {
+            const name = await promise.json()
+            console.log(name.clientName)
+             CLIENTIDENTIFIER.innerText = name.clientName
+            console.log("Yes got it!")
+        } else {
+            console.log("Couldn't retrieve the clientName")
 
+                   }
+    }).then(jsObject => jsObject)
+        .catch(error => console.log("Somethin went wrong: " + error))
+}
 /**
  *  Voeg hier je pagina toe en alles komt goed.
  *  Vorm is
@@ -39,13 +57,6 @@ function setCurrentContent(selectedContent) {
     currentContentContainer.clientHeight = height
 }
 
-window.onload = () => {
-    let height = document.getElementById("currentContentContainer").firstChild.clientHeight
-    console.log(height)
-    currentContentContainer.clientHeight = height
-}
-
-
 function fillNavigationElement() {
     for (const navKey in navElements) {
         const navLink = document.createElement("label")
@@ -59,5 +70,6 @@ function fillNavigationElement() {
 
 
 declareSubPages()
+getClientName(token)
 fillNavigationElement()
 setCurrentContent(navElements['wallet'])
