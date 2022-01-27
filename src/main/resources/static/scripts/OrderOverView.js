@@ -15,11 +15,9 @@ const KEY_CLASS = "key"
 const VALUE_CLASS = "value"
 const ASSETCODELABEL_CLASS = "code"
 
-const DELETE_BUTTON_TEXT  ="Delete";
+const DELETE_BUTTON_TEXT = "Delete";
 let ORDER_DELETE_BUTTON_CLASS = "orderDeleteButton";
-const ORDER_TO_DELETE_LABEL_ID= "orderToDelete";
-
-const token = localStorage.getItem(JWT_KEY);
+const ORDER_TO_DELETE_LABEL_ID = "orderToDelete";
 const ORDERVIEW_CONTAINER = document.getElementById(ORDERVIEW_CONTAINER_ID)
 let currentContent = "ALL"
 let orderDTOs;
@@ -39,8 +37,8 @@ function createKeyValueContainer(labelClass, innerHtml) {
 }
 
 function deleteOrder(orderID) {
-   deleteOrderFetch(token, orderID);
-   initializePage();
+    deleteOrderFetch(token, orderID);
+    initializePage();
 }
 
 function customizeMessageService() {
@@ -62,7 +60,7 @@ function customizeMessageService() {
 
 function deleteOrderPopUp(orderID) {
     document.getElementById(ORDER_TO_DELETE_LABEL_ID).innerText = orderID;
-    console.log("delete order: "+ orderID)
+    console.log("delete order: " + orderID)
     showWindow("Are you sure you want to delete this order?\n" +
         "This action cannot be undone!")
 
@@ -159,6 +157,7 @@ function fillPage() {
 }
 
 async function initializePage() {
+    console.log("page refreshed")
     const jsonOrders = await ordersFetch(token, "orderoverview")
     const jsonTransActions = await ordersFetch(token, "clienttransactions")
     orderDTOs = convertFetchToOrderDTOs(JSON.parse(jsonOrders.orders))
@@ -218,5 +217,19 @@ function convertFetchToTrasactionDTOs(transactions) {
     console.log(transactionDTOs)
     return transactionDTOs
 }
-customizeMessageService()
-initializePage()
+
+function doTimedRefresh() {
+    initializePage();
+    setInterval( initializePage, updateInterval);
+}
+
+function setTimedPageRefresh() {
+    setTimeout( doTimedRefresh, initialTimeOut);
+}
+
+customizeMessageService();
+await initializePage();
+setTimedPageRefresh();
+
+
+

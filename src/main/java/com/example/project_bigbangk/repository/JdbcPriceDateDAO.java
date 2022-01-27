@@ -2,6 +2,7 @@
 
 package com.example.project_bigbangk.repository;
 
+import com.example.project_bigbangk.model.AssetCode_Name;
 import com.example.project_bigbangk.model.PriceDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +15,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * DAO for the priceDate/PriceHistory class
+ *
  * @author Pieter Jan BLeichrodt
  */
 @Repository
@@ -35,24 +38,26 @@ public class JdbcPriceDateDAO implements IPricedateDAO {
 
     /**
      * saves a single priceDate to the database
+     *
      * @param priceDate the priceDate to be saved
      * @param assetCode the code of the asset in string format
      */
     @Override
     public void savePriceDate(PriceDate priceDate, String assetCode) {
         String sql = "Insert into pricehistory values(?,?,?);";
-                    try {
-                jdbcTemplate.update(sql,
-                        priceDate.getDateTime(),
-                        assetCode,
-                        priceDate.getPrice());
-            } catch (DataAccessException dataAccessException) {
-                logger.info(dataAccessException.getMessage());
-            }
-       }
+        try {
+            jdbcTemplate.update(sql,
+                    priceDate.getDateTime(),
+                    assetCode,
+                    priceDate.getPrice());
+        } catch (DataAccessException dataAccessException) {
+            logger.info(dataAccessException.getMessage());
+        }
+    }
 
     /**
      * retrieves the currentPrice of a given Asset from the database     *
+     *
      * @param assetCode the code of the asset in string format for which the currentPrice is returned
      * @return the currentPrice as a double
      */
@@ -72,8 +77,9 @@ public class JdbcPriceDateDAO implements IPricedateDAO {
 
     /**
      * retrieves the pricehistory of a given Asset from the database
+     *
      * @param assetCode the code of the asset in string format for which the pricehistory is returned
-     * @param date date in past for defining the interval for which priceData is retrieved
+     * @param date      date in past for defining the interval for which priceData is retrieved
      * @return the currentPrice as a double
      */
     @Override
@@ -106,6 +112,20 @@ public class JdbcPriceDateDAO implements IPricedateDAO {
             logger.info(dataAccessException.getMessage());
         }
         return priceDates.get(0).getPrice();
+    }
+
+    @Override
+    public PriceDate getMostRecentUpdate() {
+        String sql = "Select * from (SELECT * FROM pricehistory where code = ? )as pricehistorybycoin ORDER BY datetime DESC LIMIT 1;";
+        PriceDate priceDate = null;
+        try {
+            AssetCode_Name code = Arrays.stream(AssetCode_Name.values()).findFirst().orElse(null);
+            priceDate = jdbcTemplate.queryForObject(sql,
+                    new PriceDateRowMapper(), code.getAssetCode());
+        } catch (DataAccessException dataAccessException) {
+            logger.info(dataAccessException.getMessage());
+        }
+        return priceDate;
     }
 
     private class PriceDateRowMapper implements RowMapper<PriceDate> {

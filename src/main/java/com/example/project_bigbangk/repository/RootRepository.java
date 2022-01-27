@@ -388,4 +388,11 @@ public class RootRepository {
     }
 
 
+    public LocalDateTime getMostRecentUpdateTime() {
+        PriceDate priceDate = priceDateDAO.getMostRecentUpdate();
+        if (priceDate != null) {
+            return priceDate.getDateTime();
+        }
+        return null;
+    }
 }
