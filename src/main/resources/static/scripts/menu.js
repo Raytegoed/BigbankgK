@@ -22,15 +22,16 @@ const getClientName = async (token) => {
         if (promise.ok) {
             const name = await promise.json()
             console.log(name.clientName)
-             CLIENTIDENTIFIER.innerText = name.clientName
+            CLIENTIDENTIFIER.innerText = name.clientName
             console.log("Yes got it!")
         } else {
             console.log("Couldn't retrieve the clientName")
-
-                   }
+            window.location.href = "index.html"
+        }
     }).then(jsObject => jsObject)
         .catch(error => console.log("Somethin went wrong: " + error))
 }
+
 /**
  *  Voeg hier je pagina toe en alles komt goed.
  *  Vorm is
@@ -72,10 +73,11 @@ function fillNavigationElement() {
 function addLogout() {
     const navLinkLogout = document.createElement("label")
     navLinkLogout.innerText = "logout";
-    navLinkLogout.addEventListener( "click",
-        function(){
+    navLinkLogout.addEventListener("click",
+        function () {
             localStorage.setItem(JWT_KEY, "");
-            window.location.href = "index.html"});
+            window.location.href = "index.html"
+        });
     navigation.appendChild(navLinkLogout);
 }
 
