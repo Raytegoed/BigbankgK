@@ -62,3 +62,50 @@ function orderSelectedAsset(assetText){
     window.location.href = "PlaceOrder.html";
 }
 
+
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawCharts);
+
+async function drawCharts() {
+    let valutaData = await getWalletHistorie(token);
+    const dataPie = google.visualization.arrayToDataTable(getInfromationPieChart(valutaData));
+
+    const options = {
+        is3D: true,
+        pieSliceTextStyle: {
+            color: 'black',
+        },
+        sliceVisibilityThreshold: 0.08,
+        backgroundColor: 'none',
+    };
+
+    const piechart = new google.visualization.PieChart(document.getElementById('piechartWallet'));
+    piechart.draw(dataPie, options);
+}
+
+const getWalletHistorie = async (token) => {
+    return await fetch(`${rootURL}walletHistory`,
+        {
+            method: 'GET',
+            headers: acceptHeadersWithToken(token),
+        }).then(promise => {
+        if (promise.ok) {
+            return promise.json();
+        } else if(promise.status===400){
+            console.log("Couldn't retrieve pricehistory from the server")
+            window.location.href = loginPageURL
+        }else if(promise.status===401){
+            window.location.href = loginPageURL
+        }
+    }).then(json => json)
+        .catch(error=>console.log("Something went wrong: " + error))
+}
+
+function getInfromationPieChart(obj) {
+    let dataArray = [['Valuta', 'Price']];
+    for (const key in obj) {
+        dataArray.push([key, obj[key]]);
+    }
+    return dataArray;
+}
+
