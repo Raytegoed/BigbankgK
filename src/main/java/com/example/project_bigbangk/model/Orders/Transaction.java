@@ -31,7 +31,6 @@ public class Transaction{
         this.fee = fee;
         this.date = date;
         this.assetAmount = assetAmount;
-        logger.info("New transaction, without Asset and Wallets");
     }
 
     public Transaction(Asset asset, double priceExcludingFee, double assetAmount, LocalDateTime date,
