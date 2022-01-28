@@ -43,7 +43,6 @@ public class Transaction{
         this.fee = fee;
         this.buyerWallet = buyerWallet;
         this.sellerWallet = sellerWallet;
-        logger.info("New transaction, without id");
     }
 
     public Logger getLogger() {

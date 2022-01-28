@@ -20,14 +20,12 @@ public class Limit_Buy extends AbstractOrder {
 
     public Limit_Buy(int orderId, double orderLimit, double assetAmount, LocalDateTime date) {
         super(orderId, orderLimit, assetAmount, date);
-        logger.info("New Limit_Buy, without Asset and Wallet");
-    }
+           }
 
     public Limit_Buy(Asset asset, double orderLimit, double assetAmount, LocalDateTime date, Wallet buyer) {
         super(asset, orderLimit, assetAmount, date);
         this.buyer = buyer;
-        logger.info("New Limit_Buy, without id");
-    }
+           }
 
     public Wallet getBuyer() {
         return buyer;
