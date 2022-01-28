@@ -1,0 +1,18 @@
+:root {
+    --orange: #ff8034;
+    --blue:  #459ac7;
+    --fullwidth: 100%;
+    --selected: #69c7fa;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgb(49, 134, 179);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--blue);
+}
